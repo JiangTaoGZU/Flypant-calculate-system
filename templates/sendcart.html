@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block ext_css %}
+    {#        {{ block.super }}#}
+
+    {#        <link rel="stylesheet" href="{% static 'css/index.css' %}">#}
+    {% block ext_js %}
+            {{ block.super }}
+            <script type="text/javascript" src="{% static 'js/fafang.js' %}"></script>
+    {% endblock %}
+
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">裤子批量发放</button>
+        <!-- 模态框 -->
+        <div class="modal fade" id="myModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- 模态框头部 -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">裤子批量发放</h4>
+                    </div>
+
+                    <!-- 模态框主体 -->
+                    <div class="modal-body">
+                        <form action="{% url 'fly:addinsendcart' %}" method="post">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="worker">选择发放的工人：</label>
+                                <select name="worker" id="worker" class="form-control">
+                                    {% for worker in workerlist %}
+                                        <option value="{{ worker.id }}">{{ worker.w_name }}</option>
+                                    {% endfor %}
+                                </select>
+
+                                <label for="pants">选择裤子品种：</label>
+                                <select name="pants" id="pants" class="form-control">
+                                    {% for pant in pants %}
+                                        <option value="{{ pant.id }}">{{ pant.p_name }}</option>
+                                    {% endfor %}
+                                </select>
+
+                                <label for="caiid">输入裁好布匹的编号：</label>
+                                <input type="text" class="form-control" id="caiid" name="caiid">
+
+                                <label for="price">输入单条加工的价格：</label>
+                                <input type="text" class="form-control" id="price" name="price">
+
+
+                                <!-- 模态框底部 -->
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                                    <button type="submit" class="btn btn-primary">确定</button>
+                                </div>
+                            </div>
+                        </form>
+
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <a href="{% url 'fly:bedlist' %}">
+            <button type="button" class="btn btn-warning">查看裁好的布匹</button>
+        </a>
+
+        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal3">删除发放记录</button>
+
+        <div class="modal fade" id="myModal3">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- 模态框头部 -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">删除发放记录</h4>
+                    </div>
+                    <!-- 模态框主体 -->
+                    <form action="{% url 'fly:subinsendcart' %}" method="post">
+                        {% csrf_token %}
+                        <div class="modal-body">
+                            <label for="deleone">选择一条发放记录并删除</label>
+                            <select name="deleone" id="deleone" class="form-control">
+                                {% for cart in sendcarts %}
+                                    <option value="{{ cart.id }}">编号：{{ cart.id }} 品名：{{ cart.s_kuname.p_name }}</option>
+                                {% endfor %}
+                            </select>
+
+                            <!-- 模态框底部 -->
+                            <div class="modal-footer">
+                                <a href="{% url 'fly:subinsendcart' %}" id="deleall" name="deleall">
+                                    <button type="button" class="btn btn-success">
+                                        删除本次所有待发放的记录
+                                    </button>
+                                </a>
+                                <br>
+                                <br>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                                <button type="submit" class="btn btn-primary">确定</button>
+
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+        <div align="center">
+            <span>总条数：</span>
+            <span id="total_price" style="color: red;font-size: large;">{{ all_nums }}</span>
+        </div>
+        <div align="center">
+            <span>总匹数：</span>
+            <span id="total_price">{{ all_pishu }}</span>
+        </div>
+        <div align="center">
+            <span>总价格：</span>
+            <span id="total_price">{{ all_price }}</span>
+        </div>
+
+
+        <table class="table table-hover table-responsive table-striped  ">
+            <caption>
+                待入库列表
+            </caption>
+            <thead>
+            <tr>
+                <th>编号</th>
+                <th>工人</th>
+                <th>裤品名</th>
+                <th>来源布匹编号</th>
+                <th>来源布匹品类</th>
+                <th>发放条数</th>
+                <th>加工单价</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {% for  sendcart in sendcarts %}
+                <tr>
+                    <td>{{ sendcart.id }}</td>
+                    <td>{{ sendcart.s_wname.w_name }}</td>
+                    <td>{{ sendcart.s_kuname.p_name }}</td>
+                    <td>{{ sendcart.s_cai.id }}</td>
+                    <td>{{ sendcart.s_cai.cai_bupin }}</td>
+                    <td>{{ sendcart.s_cai.cai_nums }}</td>
+                    <td>{{ sendcart.s_price }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <br>
+        <div class="container" align="right">
+            <button id="make_order" class="btn btn-success">确定发放</button>
+        </div>
+    </div>
+
+
+{% endblock %}

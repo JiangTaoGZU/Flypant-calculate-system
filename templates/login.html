@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{#{% block footer%}#}
+{#    {{ block.super }}#}
+{#    <script type="text/javascript" src="{% static 'axf/user/js/login.js' %}"></script>#}
+{#{% endblock %}#}
+{#{% block ext_js %}#}
+{#    {{ block.super }}#}
+{#    <script type="text/javascript " src="{% static 'js/md5.js' %}"></script>#}
+{#{% endblock %}#}
+{% block content %}
+    <div class="container">
+        <form method="post" action="{% url 'fly:login'%}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="username_input">用户名</label>
+                <input id="username_input" type="text" name="username" class="form-control" placeholder="用户名">
+                <span id="username_info"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="password_input">密码</label>
+                <input id="password_input" type="password" name="password" class="form-control" placeholder="密码">
+            </div>
+            <p style="color:red;">{{ error_message }}</p>
+            <input type="submit" class="btn btn-success btn-block" value="登录">
+        </form>
+    </div>
+
+{% endblock %}

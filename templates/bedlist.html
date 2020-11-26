@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block ext_css %}
+    {#    {{ block.super }}#}
+    {#    <link rel="stylesheet" href="{% static 'css/index.css' %}">#}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+
+        <table class="table table-hover table-responsive table-striped  ">
+            <caption>
+                裁剪记录表
+            </caption>
+            <thead>
+            <tr>
+                <th>发放状态</th>
+                <th>编号</th>
+                <th>入库时间</th>
+                <th>布品名</th>
+                <th>29 条数</th>
+                <th>30 条数</th>
+                <th>31 条数</th>
+                <th>32 条数</th>
+                <th style="color: red">一匹的总条数</th>
+                <th>真实米数</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {% for cai in contacts %}
+                <tr>
+                    {% ifequal  cai.cai_sign 0 %}
+                        <td>
+                            <span style="color: red"> 未发放</span>
+                        </td>
+
+                    {% else %}
+                        <td>
+                            <span style="color: green">已发放</span>
+                        </td>
+                    {% endifequal %}
+                    <td>{{ cai.id }}</td>
+                    <td>{{ cai.cai_date }}</td>
+                    <td>{{ cai.cai_bupin }}</td>
+                    <td>{{ cai.twonine }}</td>
+                    <td>{{ cai.treezero }}</td>
+                    <td>{{ cai.treeone }}</td>
+                    <td>{{ cai.treetwo }}</td>
+                    <td>{{ cai.cai_nums }}</td>
+                    <td>{{ cai.cai_meter }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+
+{% block footer %}
+    <div class="container" align="center">
+        <div class="pagination">
+            {% if contacts.has_previous %}
+                <li class="page-item">
+                    <a href="?page={{ contacts.previous_page_number }}">上一页</a>
+                </li>
+            {% endif %}
+
+
+            {% for page in pages %}
+                {% if page == contacts.number %}
+                    <li class="page-item">
+                        <a class="active" href="?page={{ page }}" style="color: red">{{ page }}</a>
+                    </li>
+
+                {% else %}
+                    <li class="page-item">
+                        <a href="?page={{ page }}">{{ page }}</a>
+                    </li>
+
+                {% endif %}
+            {% endfor %}
+
+
+
+            {% if contacts.has_next %}
+                <li class="page-item">
+                    <a href="?page={{ contacts.next_page_number }}">下一页</a>
+                </li>
+            {% endif %}
+
+        </div>
+    </div>
+
+
+{% endblock %}

@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block ext_css %}
+    {#    {{ block.super }}#}
+    {#    <link rel="stylesheet" href="{% static 'css/index.css' %}">#}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">添加布品类</button>
+        <!-- 模态框 -->
+        <div class="modal fade" id="myModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- 模态框头部 -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">添加布匹品类</h4>
+                    </div>
+
+                    <!-- 模态框主体 -->
+                    <div class="modal-body">
+                        <form action="{% url 'fly:addbutype' %}" method="post">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="boss">布老板</label>
+                                <select name="boss" id="boss" class="form-control">
+                                    {% for boss in bosslist %}
+                                        <option value="{{ boss.l_username }}">{{ boss.l_username }}</option>
+                                    {% endfor %}
+                                </select>
+
+                                <label for="bname">新布品名：</label>
+                                <input type="text" class="form-control" id="bname" name="bname">
+
+                                <label for="price">每米进价：</label>
+                                <input type="text" class="form-control" id="price" name="price">
+
+                                <!-- 模态框底部 -->
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                                    <button type="submit" class="btn btn-primary">确定</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal3" >删除布品类</button>
+        <!-- 模态框 -->
+        <div class="modal fade" id="myModal3">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- 模态框头部 -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">删除布品</h4>
+                    </div>
+                    <!-- 模态框主体 -->
+                    <form action="{% url 'fly:subbutype' %}" method="post">
+                        {% csrf_token %}
+                        <div class="modal-body">
+                            <label for="boss">选择一种布品并删除</label>
+                            <select name="bu" id="bu" class="form-control">
+                                {% for bu in bus %}
+                                    <option value="{{ bu.id }}">{{ bu.id }} {{ bu.b_bossname }}：{{ bu.b_name }}</option>
+                                {% endfor %}
+                            </select>
+                            <!-- 模态框底部 -->
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                                <button type="submit" class="btn btn-primary">确定</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+        <table class="table table-hover table-responsive table-striped  ">
+            <caption>
+                布品类列表
+            </caption>
+            <thead>
+            <tr>
+                <th>编号</th>
+                <th>布老板</th>
+                <th>名称</th>
+                <th>进价/米</th>
+                <th>库存数/匹</th>
+                <th>米数</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for bu in bus %}
+                <tr>
+                    <td>{{ bu.id }}</td>
+                    <td>{{ bu.b_bossname }}</td>
+                    <td>{{ bu.b_name }}</td>
+                    <td>{{ bu.b_price }}</td>
+                    <td>{{ bu.b_storenums }}</td>
+                    <td>{{ bu.b_meters }}</td>
+
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+     </div>
+
+{% endblock %}

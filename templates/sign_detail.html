@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% load static %}
+{#{% block ext_css %}#}
+{#    {{ block.super }}#}
+{#    <script type="text/javascript" src="{% static 'css/budetail.css' %}"></script>#}
+{#{% endblock %}#}
+
+{% block ext_js %}
+    {{ block.super }}
+    <script type="text/javascript" src="{% static 'js/sign_detail.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+
+    <div class="container">
+
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 text-center">
+            <div class="list-group list-group-horizontal">
+                <a href="#" class="list-group-item active">工人：{{ order.s_o_worker }}</a>
+                <a href="#" class="list-group-item ">发放时间：{{ order.s_o_time }}</a>
+                <a href="#" class="list-group-item">发放条数：{{ order.s_o_nums }}</a>
+                <a href="#" class="list-group-item">发放匹数：{{ order.s_o_pishu }}</a>
+                <a href="#" class="list-group-item">本单总价：¥{{ order.s_o_allprice }}</a>
+                <a href="#" class="list-group-item active">损耗：¥{{ order.s_o_sunhao }}</a>
+                <a href="#" class="list-group-item active">备注：{{ order.s_o_beizhu }}</a>
+            </div>
+        </div>
+
+        <a href="{% url 'fly:sign' %}">
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal2">返回到签收界面</button>
+        </a>
+
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal3">填写损耗和备注</button>
+        <!-- 模态框 -->
+        <div class="modal fade" id="myModal3">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- 模态框头部 -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">填写损耗和备注</h4>
+                    </div>
+                    <!-- 模态框主体 -->
+                    <form action="{% url 'fly:signsunhao' %}" method="post">
+                        {% csrf_token %}
+                        <div class="modal-body">
+                            <label for="orderid">单号：</label>
+                            <select name="orderid" id="orderid" class="form-control">
+                                <option value="{{ order.id }}">{{ order.id }}| {{ order.s_o_worker }}</option>
+                            </select>
+                            <label for="sunhao">请输入本单的损耗金额：</label>
+                            <input type="text" class="form-control" id="sunhao" name="sunhao">
+
+                            <label for="beizhu">请输入备注：</label>
+                            <input type="text" class="form-control" id="beizhu" name="beizhu">
+
+                            <!-- 模态框底部 -->
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                                <button type="submit" class="btn btn-primary">确定</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <table class="table table-hover table-responsive table-striped  ">
+
+            <caption>发放单编号：{{ order.id }}</caption>
+
+            <thead>
+            <tr>
+                <th>发放记录号</th>
+                <th>裤品名</th>
+                <th>来源布匹编号</th>
+                <th>来源布匹品类</th>
+                <th>加工单价/元</th>
+                <th>发放条数</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {% for item in order.sendorderitems_set.all %}
+                <tr>
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.soi_pname }}</td>
+                    <td>{{ item.soi_caiid }}</td>
+                    <td>{{ item.soi_caibupin }}</td>
+                    <td>{{ item.soi_price }}</td>
+                    <td>{{ item.soi_nums }}</td>
+                    <td>
+                        {% ifequal item.soi_is_sign False %}
+                            <a href="#" itemid="{{ item.id }}" id="sign_one" onclick="signconfirm();">
+                                <button type="button" class="btn btn-warning">
+                                    确认签收
+                                </button>
+                            </a>
+                        {% else %}
+                            <span>已签收</span>
+                        {% endifequal %}
+
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% endblock %}

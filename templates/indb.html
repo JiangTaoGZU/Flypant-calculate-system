@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block ext_css %}
+    {#        {{ block.super }}#}
+
+    {#        <link rel="stylesheet" href="{% static 'css/index.css' %}">#}
+{% block ext_js %}
+    {{ block.super }}
+    <script type="text/javascript" src="{% static 'js/indblist.js' %}"></script>
+{% endblock %}
+
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">布匹批量入库</button>
+        <!-- 模态框 -->
+        <div class="modal fade" id="myModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- 模态框头部 -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">布匹批量入库</h4>
+                    </div>
+
+                    <!-- 模态框主体 -->
+                    <div class="modal-body">
+                        <form action="{% url 'fly:addincart' %}" method="post">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="boss">选择要入库的布品种：</label>
+                                <select name="butype" id="butype" class="form-control">
+                                    {% for bu in bus %}
+                                        <option value="{{ bu.id }}">{{ bu.b_bossname }}|{{ bu.b_name }}：{{ bu.b_price }}元</option>
+                                    {% endfor %}
+                                </select>
+
+                                <label for="bname">入库匹数：</label>
+                                <input type="text" class="form-control" id="bunum" name="bunum">
+
+                                <!-- 模态框底部 -->
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                                    <button type="submit" class="btn btn-primary">确定</button>
+                                </div>
+                            </div>
+                        </form>
+
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal3">删除入库列</button>
+
+        <div class="modal fade" id="myModal3">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- 模态框头部 -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">删除布品</h4>
+                    </div>
+                    <!-- 模态框主体 -->
+                    <form action="{% url 'fly:subincart' %}" method="post">
+                        {% csrf_token %}
+                        <div class="modal-body">
+                            <label for="deleone">选择一匹准备入库的布并删除</label>
+                            <select name="cartbu" id="cartbu" class="form-control">
+                                {% for cart in carts %}
+                                    <option value="{{ cart.id }}">{{ cart.id }} {{ cart.c_bupi.b_bossname }}：{{ cart.c_bupi.b_name }}</option>
+                                {% endfor %}
+                            </select>
+
+                            <!-- 模态框底部 -->
+                            <div class="modal-footer">
+                                <a href="{% url 'fly:subincart' %}" id="deleall" name="deleall">
+                                    <button type="button" class="btn btn-success">
+                                        删除所有待入库的布匹
+                                    </button>
+                                </a>
+                                <br>
+                                <br>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                                <button type="submit" class="btn btn-primary">确定</button>
+
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div align="center">
+            <span>总价格：</span>
+            <span id="total_price" style="color: red;font-size: large;">{{ total_price }}</span>
+        </div>
+        <div align="center">
+            <span>总米数：</span>
+            <span id="total_price">{{ total_meters }}</span>
+        </div>
+        <div align="center">
+            <span>总匹数：</span>
+            <span id="total_price">{{ total_nums }}</span>
+        </div>
+
+
+        <table class="table table-hover table-responsive table-striped  ">
+            <caption>
+                待入库列表
+            </caption>
+            <thead>
+            <tr>
+                <th>编号</th>
+                <th>布老板</th>
+                <th>名称</th>
+                <th>价格/米</th>
+                <th>米数</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {% for  cart in carts %}
+                <tr>
+                    <td>{{ cart.id }}</td>
+                    <td>{{ cart.c_bupi.b_bossname }}</td>
+                    <td>{{ cart.c_bupi.b_name }}</td>
+                    <td>{{ cart.c_bupi.b_price }}</td>
+                    {% ifnotequal  cart.c_meter 0 %}
+                        <td>{{ cart.c_meter }}</td>
+
+                    {% else %}
+                        <td>
+                            <form action="{% url 'fly:addmeter' %}" method="post">
+                                {% csrf_token %}
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="meter" id="meter">
+                                </div>
+
+                        </td>
+                    {% endifnotequal %}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="container" align="right">
+            <button id="cal" type="submit" class="btn btn-primary">计算本次入库单总价</button>
+        </div>
+               </form>
+        <br>
+        <div class="container" align="right">
+                    <button id="make_order"   class="btn btn-success">确定入库</button>
+        </div>
+    </div>
+
+
+{% endblock %}

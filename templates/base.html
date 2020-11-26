@@ -1,0 +1,45 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <!-- 包含头部信息用于适应不同设备 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 包含 bootstrap 样式表 -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    {#    <link rel="stylesheet" href="{% static 'css/index.css' %}">#}
+
+    {% block ext_css %}
+    {% endblock %}
+
+</head>
+
+<body>
+<div class="jumbotron">
+    <a href="{% url 'fly:index' %}">
+        <h1 align="center ">
+            飞越裤业加工厂管理系统
+        </h1>
+
+    </a>
+
+</div>
+
+{% block header %}
+{% endblock %}
+
+{% block content %}
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
+
+<script type="text/javascript" src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
+
+{% block ext_js %}
+{% endblock %}
+
+</body>
+</html>

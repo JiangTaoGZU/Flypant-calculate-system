@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block ext_css %}
+    {#    {{ block.super }}#}
+    {#    <link rel="stylesheet" href="{% static 'css/index.css' %}">#}
+{% endblock %}
+
+{% block content %}
+
+    <div class="container">
+        <a href="{% url 'fly:worker' %}">
+            <button type="button" class="btn btn-secondary">工人增减
+            </button>
+        </a>
+
+        <a href="{% url 'fly:kutype' %}">
+            <button type="button" class="btn btn-success">裤子品类
+            </button>
+        </a>
+
+        <a href="{% url 'fly:sendcart' %}">
+            <button type="button" class="btn btn-warning">发放裤子给工人</button>
+        </a>
+
+        <a href="{% url 'fly:sendorderlist' %}">
+            <button type="button" class="btn btn-primary">发放记录查询</button>
+        </a>
+
+
+        <table class="table table-hover table-responsive table-striped  ">
+            <caption>
+                裤子品类列表
+            </caption>
+            <thead>
+            <tr>
+                <th>编号</th>
+                <th>名称</th>
+                <th>总发放条数</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for pan in pants %}
+                <tr>
+                    <td>{{ pan.id }}</td>
+                    <td>{{ pan.p_name }}</td>
+                    <td>{{ pan.p_nums }}</td>
+
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

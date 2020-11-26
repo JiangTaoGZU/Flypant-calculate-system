@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block ext_css %}
+    {#        {{ block.super }}#}
+    {#        <link rel="stylesheet" href="{% static 'css/index.css' %}">#}
+{% endblock %}
+{% block ext_js %}
+    {{ block.super }}
+    <script type="text/javascript" src="{% static 'js/sign.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+
+    <div class="container">
+
+
+        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal1">取消签收</button>
+        <!-- 模态框 -->
+        <div class="modal fade" id="myModal1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- 模态框头部 -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">取消签收</h4>
+                    </div>
+                    <!-- 模态框主体 -->
+                    <form action="{% url 'fly:canselsign' %}" method="post">
+                        {% csrf_token %}
+                        <div class="modal-body">
+                            <label for="orderli">请输入发放单编号并取消签收！</label>
+                            <input type="text" class="form-control" id="orderli" name="orderli">
+
+                            <!-- 模态框底部 -->
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+
+                                <button type="submit" class="btn btn-primary">确定</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#myModal2">按工人名字查询</button>
+
+        <div class="modal fade" id="myModal2">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- 模态框头部 -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">按工人名字查询</h4>
+                    </div>
+                    <!-- 模态框主体 -->
+                    <form action="{% url 'fly:signlistbyworker' %}" method="post">
+                        {% csrf_token %}
+                        <div class="modal-body">
+                            <label for="worker">请选择工人名字</label>
+                            <select name="worker" id="worker" class="form-control">
+                                {% for worker in workerlist %}
+                                    <option value="{{ worker.w_name }}">{{ worker.w_name }}</option>
+                                {% endfor %}
+                            </select>
+
+                            <!-- 模态框底部 -->
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+
+                                <button type="submit" class="btn btn-primary">确定</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <table class="table table-hover table-responsive table-striped ">
+
+            <caption>所有发放单</caption>
+
+            <thead>
+            <tr>
+                <th>签收状态</th>
+                <th>发放单编号</th>
+                <th>发放时间</th>
+                <th>工人</th>
+                <th>裤品名</th>
+                <th>发放总条数</th>
+                <th>发放匹数</th>
+                <th style="color: red">损耗</th>
+                <th style="color: red">备注</th>
+                <th>加工总价</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            {% for order in contacts %}
+                <tr>
+                    {% ifequal  order.s_o_is_sign 0 %}
+                        <td>
+                            <span style="color: red"> 未签收</span>
+                        </td>
+
+                    {% else %}
+                        <td>
+                            <span style="color: green">已签收</span>
+                        </td>
+                    {% endifequal %}
+
+                    <td>{{ order.id }}</td>
+                    <td>{{ order.s_o_time }}</td>
+                    <td>{{ order.s_o_worker }}</td>
+                    {#                    骚操作#}
+                    <td>{{ order.sendorderitems_set.first.soi_pname }}...</td>
+                    <td>{{ order.s_o_nums }}</td>
+                    <td>{{ order.s_o_pishu }}</td>
+                    <td>{{ order.s_o_sunhao }}</td>
+                    <td>{{ order.s_o_beizhu }}</td>
+                    <td>{{ order.s_o_allprice }}</td>
+
+
+                    <td>
+                        <a href="#" orderid="{{ order.id }}" class="orderli">
+                            <button type="button" class="btn btn-success">
+                                进行签收
+                            </button>
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+{% endblock %}
+
+{% block footer %}
+    <div class="container" align="center">
+        <div class="pagination">
+            {% if contacts.has_previous %}
+                <li class="page-item">
+                    <a href="?page={{ contacts.previous_page_number }}">上一页</a>
+                </li>
+            {% endif %}
+
+
+            {% for page in pages %}
+                {% if page == contacts.number %}
+                    <li class="page-item">
+                        <a class="active" href="?page={{ page }}" style="color: red">{{ page }}</a>
+                    </li>
+
+                {% else %}
+                    <li class="page-item">
+                        <a href="?page={{ page }}">{{ page }}</a>
+                    </li>
+
+                {% endif %}
+            {% endfor %}
+
+
+
+            {% if contacts.has_next %}
+                <li class="page-item">
+                    <a href="?page={{ contacts.next_page_number }}">下一页</a>
+                </li>
+            {% endif %}
+
+        </div>
+    </div>
+
+
+{% endblock %}

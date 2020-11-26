@@ -1,0 +1,195 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block ext_css %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    {#      <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">#}
+{% endblock %}
+{#{% block header %}#}
+{#  <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">#}
+{#{% endblock %}#}
+{% block content %}
+    <div class="container">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">填写裁剪信息</button>
+        <!-- 模态框 -->
+        <div class="modal fade" id="myModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- 模态框头部 -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">填写裁剪信息</h4>
+                    </div>
+
+                    <!-- 模态框主体 -->
+                    <div class="modal-body">
+                        <form action="{% url 'fly:addinbed' %}" method="post">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="boss">选择裁剪的布品种：</label>
+                                <select name="bupin" id="bupin" class="form-control">
+                                    {% for bu in bus %}
+                                        <option value="{{ bu.id }}">{{ bu.id }}：{{ bu.b_bossname }}，{{ bu.b_name }}</option>
+                                    {% endfor %}
+                                </select>
+
+                                <label for="caiprice">裁剪单价：</label>
+                                <select name="caiprice" id="caiprice" class="form-control">
+                                    <option value="0.6">六角</option>
+                                    <option value="0.8">八角</option>
+                                </select>
+
+                                <label for="29">29条数：</label>
+                                <input type="text" class="form-control" id="29" name="29">
+
+                                <label for="30">30条数：</label>
+                                <input type="text" class="form-control" id="30" name="30">
+
+                                <label for="31">31条数：</label>
+                                <input type="text" class="form-control" id="30" name="31">
+
+                                <label for="32">32条数：</label>
+                                <input type="text" class="form-control" id="32" name="32">
+
+                                <label for="mi">真实米数：</label>
+                                <input type="text" class="form-control" id="mi" name="mi">
+
+                                <!-- 模态框底部 -->
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                                    <button type="submit" class="btn btn-primary">确定</button>
+                                </div>
+                            </div>
+                        </form>
+
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal3">删除裁剪记录</button>
+
+        <div class="modal fade" id="myModal3">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- 模态框头部 -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">删除裁剪记录</h4>
+                    </div>
+                    <!-- 模态框主体 -->
+                    <form action="{% url 'fly:subinbed' %}" method="post">
+                        {% csrf_token %}
+                        <div class="modal-body">
+                            <label for="caidele">请输入裁剪记录的编号，并删除：</label>
+                            <input type="text" class="form-control" id="caidele" name="caidele">
+
+                            <!-- 模态框底部 -->
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                                <button type="submit" class="btn btn-primary">确定</button>
+
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <a href="{% url 'fly:countbed' %}">
+            <button type="button" class="btn btn-success">计算裁床总价</button>
+        </a>
+
+
+        <table class="table table-hover table-responsive table-striped  ">
+            <caption>
+                裁剪记录表
+            </caption>
+            <thead>
+            <tr>
+                <th>发放状态</th>
+                <th>编号</th>
+
+                <th>裁出时间</th>
+                <th>布品名</th>
+                <th>29 条数</th>
+                <th>30 条数</th>
+                <th>31 条数</th>
+                <th>32 条数</th>
+                <th>裁剪单价</th>
+                <th style="color: red">一匹的总条数</th>
+                <th>真实米数</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for cai in contacts %}
+                {#            {% for cai in cairecords %}#}
+                <tr>
+
+                    {% ifequal  cai.cai_sign 0 %}
+                        <td>
+                            <span style="color: red"> 未发放</span>
+                        </td>
+
+                    {% else %}
+                        <td>
+                            <span style="color: green">已发放</span>
+                        </td>
+                    {% endifequal %}
+                    <td>{{ cai.id }}</td>
+
+
+                    <td>{{ cai.cai_date }}</td>
+                    <td>{{ cai.cai_bupin }}</td>
+                    <td>{{ cai.twonine }}</td>
+                    <td>{{ cai.treezero }}</td>
+                    <td>{{ cai.treeone }}</td>
+                    <td>{{ cai.treetwo }}</td>
+                    <td>{{ cai.cai_price }}</td>
+                    <td>{{ cai.cai_nums }}</td>
+                    <td>{{ cai.cai_meter }}</td>
+                </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+
+{% block footer %}
+    <div class="container" align="center">
+        <div class="pagination">
+            {% if contacts.has_previous %}
+                <li class="page-item">
+                    <a href="?page={{ contacts.previous_page_number }}">上一页</a>
+                </li>
+            {% endif %}
+
+
+            {% for page in pages %}
+                {% if page == contacts.number %}
+                    <li class="page-item">
+                        <a class="active" href="?page={{ page }}" style="color: red">{{ page }}</a>
+                    </li>
+
+                {% else %}
+                    <li class="page-item">
+                        <a href="?page={{ page }}">{{ page }}</a>
+                    </li>
+
+                {% endif %}
+            {% endfor %}
+
+
+
+            {% if contacts.has_next %}
+                <li class="page-item">
+                    <a href="?page={{ contacts.next_page_number }}">下一页</a>
+                </li>
+            {% endif %}
+
+        </div>
+    </div>
+
+
+{% endblock %}

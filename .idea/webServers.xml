@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="1917a6ae-8ce7-44c0-aa6b-11d6ed168577" name="fly" url="http://47.106.229.40">
+        <fileTransfer host="47.106.229.40" port="22" rootFolder="/var/www/fly" accessType="SFTP">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" />
+          </advancedOptions>
+          <option name="port" value="22" />
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

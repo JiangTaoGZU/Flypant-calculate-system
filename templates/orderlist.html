@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block ext_css %}
+    {#        {{ block.super }}#}
+    {#        <link rel="stylesheet" href="{% static 'css/index.css' %}">#}
+{% endblock %}
+{% block ext_js %}
+    {{ block.super }}
+    <script type="text/javascript" src="{% static 'js/orderlist.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+
+    <div class="container">
+
+        <a href="{% url 'fly:indb' %}">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal2">布匹入库</button>
+        </a>
+
+
+        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal3"
+                onclick="javaScript:alert('删除入库单会将入库的一批记录全部删除，请谨慎操作！');">删除入库单
+        </button>
+        <!-- 模态框 -->
+        <div class="modal fade" id="myModal3">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- 模态框头部 -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">删除入库单</h4>
+                    </div>
+                    <!-- 模态框主体 -->
+                    <form action="{% url 'fly:suborder' %}" method="post">
+                        {% csrf_token %}
+                        <div class="modal-body">
+                            <label for="orderl">请输入入库单编号并删除！</label>
+                            <input type="text" class="form-control" id="orderl" name="orderl">
+
+                            <!-- 模态框底部 -->
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+
+                                <button type="submit" class="btn btn-primary">确定</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+        <table class="table table-hover table-responsive table-striped ">
+
+            <caption>所有入库单</caption>
+
+            <thead>
+            <tr>
+                <th>入库单编号</th>
+                <th>入库时间</th>
+                <th>入库品类</th>
+                <th>入库米数</th>
+                <th>入库匹数</th>
+                <th>一单总进价</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            {% for order in contacts %}
+                <tr>
+                    <td>{{ order.id }}</td>
+                    <td>{{ order.o_time }}</td>
+{#                    骚操作，前端的反向查询#}
+                    <td>{{ order.orderbus_set.first.o_bupi }}...</td>
+                    <td>{{ order.o_meters }}</td>
+                    <td>{{ order.o_pishu }}</td>
+                    <td>{{ order.o_allprice }}</td>
+                    <td>
+                        <a href="#" orderid="{{ order.id }}" class="orderli">
+                            <button type="button" class="btn btn-success">
+                                查看详情
+                            </button>
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+{% endblock %}
+
+{% block footer %}
+    <div class="container" align="center">
+        <div class="pagination">
+            {% if contacts.has_previous %}
+                <li class="page-item">
+                    <a href="?page={{ contacts.previous_page_number }}">上一页</a>
+                </li>
+            {% endif %}
+
+
+            {% for page in pages %}
+                {% if page == contacts.number %}
+                    <li class="page-item">
+                        <a class="active" href="?page={{ page }}" style="color: red">{{ page }}</a>
+                    </li>
+
+                {% else %}
+                    <li class="page-item">
+                        <a href="?page={{ page }}">{{ page }}</a>
+                    </li>
+
+                {% endif %}
+            {% endfor %}
+
+
+
+            {% if contacts.has_next %}
+                <li class="page-item">
+                    <a href="?page={{ contacts.next_page_number }}">下一页</a>
+                </li>
+            {% endif %}
+
+        </div>
+    </div>
+
+
+{% endblock %}

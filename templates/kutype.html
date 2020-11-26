@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block ext_css %}
+    {#    {{ block.super }}#}
+    {#    <link rel="stylesheet" href="{% static 'css/index.css' %}">#}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">添加裤字品类</button>
+        <!-- 模态框 -->
+        <div class="modal fade" id="myModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- 模态框头部 -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">添加裤子品类</h4>
+                    </div>
+
+                    <!-- 模态框主体 -->
+                    <div class="modal-body">
+                        <form action="{% url 'fly:addkutype' %}" method="post">
+                            {% csrf_token %}
+                            <div class="form-group">
+
+                                <label for="pname">新裤品名：</label>
+                                <input type="text" class="form-control" id="pname" name="pname">
+
+
+                                <!-- 模态框底部 -->
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                                    <button type="submit" class="btn btn-primary">确定</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal3" >删除裤子品类</button>
+        <!-- 模态框 -->
+        <div class="modal fade" id="myModal3">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- 模态框头部 -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">删除裤品</h4>
+                    </div>
+                    <!-- 模态框主体 -->
+                    <form action="{% url 'fly:subkutype' %}" method="post">
+                        {% csrf_token %}
+                        <div class="modal-body">
+                            <label for="pants">选择一种裤子并删除</label>
+                            <select name="pants" id="pants" class="form-control">
+                                {% for pan in pants %}
+                                    <option value="{{ pan.id }}">{{ pan.id }}： {{ pan.p_name }}</option>
+                                {% endfor %}
+                            </select>
+                            <!-- 模态框底部 -->
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                                <button type="submit" class="btn btn-primary">确定</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+        <table class="table table-hover table-responsive table-striped  ">
+            <caption>
+                裤字品类列表
+            </caption>
+            <thead>
+            <tr>
+                <th>编号</th>
+                <th>名称</th>
+                <th>总发放条数</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for pan in pants %}
+                <tr>
+                    <td>{{ pan.id }}</td>
+                    <td>{{ pan.p_name }}</td>
+                    <td>{{ pan.p_nums }}</td>
+
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+     </div>
+
+{% endblock %}

@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block ext_css %}
+    {#    {{ block.super }}#}
+    {#    <link rel="stylesheet" href="{% static 'css/index.css' %}">#}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal2">添加工人</button>
+        <!-- 模态框 -->
+        <div class="modal fade" id="myModal2">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- 模态框头部 -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">添加工人</h4>
+                    </div>
+                    <!-- 模态框主体 -->
+                    <div class="modal-body">
+                        <form action="{% url 'fly:addworker' %}" method="post">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="bossname">工人名字：</label>
+                                <input type="text" class="form-control" id="workername" name="workername">
+                                <label for="tell">工人电话：</label>
+                                <input type="text" class="form-control" id="tell" name="tell">
+
+                                <!-- 模态框底部 -->
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                                    <button type="submit" class="btn btn-primary">确定</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal3">删除工人</button>
+        <!-- 模态框 -->
+        <div class="modal fade" id="myModal3">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- 模态框头部 -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">删除工人</h4>
+                    </div>
+                    <!-- 模态框主体 -->
+                    <form action="{% url 'fly:subworker' %}" method="post">
+                        {% csrf_token %}
+                        <div class="modal-body">
+                            <label for="worker">选择一个工人并删除</label>
+                            <select name="worker" id="worker" class="form-control">
+                                {% for worker in workerlist %}
+                                    <option value="{{ worker.id }}">{{ worker.w_name }}</option>
+                                {% endfor %}
+                            </select>
+
+                            <!-- 模态框底部 -->
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                                <button type="submit" class="btn btn-primary">确定</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+        <table class="table table-hover table-responsive table-striped  ">
+            <caption>
+                工人列表
+            </caption>
+            <thead>
+            <tr>
+                <th>编号</th>
+                <th>工人名字</th>
+                <th>电话</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for worker in workerlist %}
+                <tr>
+                    <td>{{ worker.id }}</td>
+                    <td>{{ worker.w_name }}</td>
+                    <td>{{ worker.w_tell }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+
+
+
+{% endblock %}

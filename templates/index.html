@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block ext_css %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <a href="{% url 'fly:logout' %}">
+            <button type="button" class="btn btn-success">退出</button>
+        </a>
+    </div>
+
+
+    <div class="container">
+        {#    <div class="btn-group btn-group-justified ">#}
+        <div class="btn-group btn-group-justified">
+            <a href="{% url 'fly:bupi' %}" class="btn btn-primary">布匹管理</a>
+            <a href="{% url 'fly:bed' %}" class="btn btn-primary">裁床</a>
+            <a href="{% url 'fly:jiagong' %}" class="btn btn-primary">发放管理</a>
+            <a href="{% url 'fly:sign' %}" class="btn btn-primary">工人签收</a>
+        </div>
+    </div>
+{% endblock %}
+
+{% block footer %}
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <div align="center">
+     <a href="http://www.beian.miit.gov.cn" target="_blank" rel="nofollow noopener" >Copyright@飞越裤业|  黔ICP备19011252号-1</a>
+    </div>
+
+{% endblock %}
